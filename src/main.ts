@@ -5,8 +5,8 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
-    .setTitle('NestJS')
-    .setDescription('A nestjs application for the web')
+    .setTitle('Credit Card API Documentation')
+    .setDescription('This is a documentation credit card learned from Udemy')
     .setVersion('1.0')
     .build();
 
