@@ -33,6 +33,10 @@ export class UserService {
     return this.userRepository.find({ where: { cpf: cpf } });
   }
 
+  async showUserByEmail(email: string) {
+    return this.userRepository.findOne({ where: { email: email } });
+  }
+
   private async encryptPassword(password: string) {
     return bcrypt.hash(password, 10);
   }

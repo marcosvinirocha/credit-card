@@ -10,6 +10,14 @@ async function bootstrap() {
     .setTitle('Credit Card API Documentation')
     .setDescription('This is a documentation credit card learned from Udemy')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'JWT',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
