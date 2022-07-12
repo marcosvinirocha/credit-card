@@ -6,16 +6,25 @@ import { Solicitation } from './solicitation.entity';
 import { Repository } from 'typeorm';
 import SolicitationStatus from './enum/solicitation-status.enum';
 import { UserService } from '../user/user.service';
+import CreditCard from './credit-card.entity';
+import { addYears } from 'date-fns';
+import Brands from './enum/brands.enum';
+import generateCreditCard from '../credit-card/helpers/generate-credit-card.helper';
+import UserStatus from 'src/user/enum/user-status.enum';
 
 @Injectable()
 export class CreditCardService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(CreditCard)
+    private creditCardRepository: Repository<CreditCard>,
     @InjectRepository(Solicitation)
     private solicitationRepository: Repository<Solicitation>,
     private userService: UserService,
   ) {}
   async createSolicitation(creditCardRequest: CreditCardRequestDTO) {
+    const score = this.requestScore();
+    const approved = score >= 600;
     const userExists = await this.userService.verifyIfUserExists(
       creditCardRequest.email,
       creditCardRequest.cpf,
@@ -29,9 +38,8 @@ export class CreditCardService {
       name: creditCardRequest.name,
       password: creditCardRequest.password,
       cpf: creditCardRequest.cpf,
+      status: approved ? UserStatus.ENABLED : UserStatus.DISABLED,
     });
-    const score = this.requestScore();
-    const approved = score >= 600;
 
     await this.solicitationRepository.save(
       this.solicitationRepository.create({
@@ -43,7 +51,25 @@ export class CreditCardService {
       }),
     );
 
+    if (approved) {
+      this.generateCreditCardApproved(user);
+    }
+
     return approved;
+  }
+
+  private async generateCreditCardApproved(user: User) {
+    const DEFAULT_BRAND = Brands.VISA;
+
+    return await this.creditCardRepository.save(
+      this.creditCardRepository.create({
+        valid_until: addYears(new Date(), 5),
+        number: generateCreditCard(DEFAULT_BRAND),
+        cvv: '000',
+        brand: DEFAULT_BRAND,
+        user,
+      }),
+    );
   }
 
   private requestScore() {

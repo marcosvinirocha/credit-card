@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import UserStatus from 'src/user/enum/user-status.enum';
 
 @Entity()
 export class User {
@@ -16,4 +17,7 @@ export class User {
 
   @Column({ unique: true })
   cpf: string;
+
+  @Column()
+  status: UserStatus;
 }
