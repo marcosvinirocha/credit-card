@@ -12,7 +12,9 @@ import { UserService } from './user/user.service';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { TransactionModule } from './transaction/transaction.module';
+import { StatementModule } from './statement/statement.module';
 import CreditCard from './credit-card/credit-card.entity';
+import Transaction from './transaction/transaction.entity';
 
 @Module({
   imports: [
@@ -23,13 +25,14 @@ import CreditCard from './credit-card/credit-card.entity';
       username: 'root',
       password: '92318491',
       database: 'creditcard',
-      entities: [User, Solicitation, CreditCard],
+      entities: [User, Solicitation, CreditCard, Transaction],
       synchronize: true,
     }),
     CreditCardModule,
     UserModule,
     AuthModule,
     TransactionModule,
+    StatementModule,
   ],
   controllers: [AppController, UserController],
   providers: [
