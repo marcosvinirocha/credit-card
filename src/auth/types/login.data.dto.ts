@@ -2,12 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 
 class LoginDataDTO {
   @ApiProperty({
-    description: 'Dia do pagamento da fatura',
+    description: 'Email do usuario',
   })
   email: string;
 
   @ApiProperty({
-    description: 'Dia do pagamento da fatura',
+    description: 'Senha do Usuario',
   })
   password: string;
 }

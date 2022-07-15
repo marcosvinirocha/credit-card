@@ -26,6 +26,15 @@ export class UserService {
     return foundUserByEmail.length > 0 || foundUserByCpf.length > 0;
   }
 
+  async getUsersWithNoBill() {
+    const query = await this.userRepository
+      .createQueryBuilder('u')
+      .leftJoinAndSelect('bill', 'b', 'b.userId = u.id')
+      .where('b.id is null');
+
+    return query.getMany();
+  }
+
   private findUserByEmail(email: string) {
     return this.userRepository.find({ where: { email: email } });
   }
